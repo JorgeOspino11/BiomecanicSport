@@ -34,7 +34,7 @@ def build_app(page: ft.Page):
     tf_posicion = ft.TextField(label="Especialidad / Posición", value="Velocista", width=190)
 
     # Componentes de resultado
-    estado_texto = ft.Text("Estado: Esperando datos", color=ft.colors.AMBER)
+    estado_texto = ft.Text("Estado: Esperando datos", color="amber")
     img_grafica = ft.Image(src="", width=600, height=300, visible=False)
 
     def ejecutar_analisis_completo(e):
@@ -52,27 +52,26 @@ def build_app(page: ft.Page):
             
             ruta_carpeta, ruta_grafica = BiomechanicalAnalyzer.procesar_atleta_completo(atleta)
             
-            # Actualizar visor de la gráfica en vivo
             img_grafica.src = ruta_grafica
             img_grafica.visible = True
             
             estado_texto.value = f"¡Expediente creado en:\n{ruta_carpeta}"
-            estado_texto.color = ft.colors.GREEN
+            estado_texto.color = "green"
             page.update()
         except Exception as ex:
             estado_texto.value = f"Error en procesamiento: {str(ex)}"
-            estado_texto.color = ft.colors.RED
+            estado_texto.color = "red"
             page.update()
 
     def iniciar_visor_camara(e):
         if not processor.iniciar_camara():
             estado_texto.value = "Error: No se detectó la cámara"
-            estado_texto.color = ft.colors.RED
+            estado_texto.color = "red"
             page.update()
             return
 
         estado_texto.value = "Cámara activa. Presiona 'Q' en la ventana para detener."
-        estado_texto.color = ft.colors.GREEN
+        estado_texto.color = "green"
         page.update()
 
         try:
@@ -86,14 +85,14 @@ def build_app(page: ft.Page):
         finally:
             processor.liberar_camara()
             estado_texto.value = "Análisis por visión finalizado."
-            estado_texto.color = ft.colors.AMBER
+            estado_texto.color = "amber"
             page.update()
 
     # Controles de Configuración
     chk_espejo = ft.Checkbox(label="Efecto Espejo", value=True, on_change=lambda e: setattr(processor.config, 'espejo', e.control.value))
     chk_grises = ft.Checkbox(label="Escala de Grises", value=False, on_change=lambda e: setattr(processor.config, 'escala_grises', e.control.value))
 
-    # Pestañas principales de la interfaz
+    # Pestañas principales (Uso de ft.FilledButton universal)
     tabs = ft.Tabs(
         selected_index=0,
         tabs=[
@@ -102,11 +101,11 @@ def build_app(page: ft.Page):
                 content=ft.Container(
                     padding=20,
                     content=ft.Column([
-                        ft.Text("Perfil Antropométrico del Deportista", size=18, weight=ft.FontWeight.BOLD),
+                        ft.Text("Perfil Antropométrico del Deportista", size=18, weight="bold"),
                         ft.Row([tf_nombre, tf_apellido, tf_edad, tf_fecha_nac]),
                         ft.Row([tf_peso, tf_altura, dd_deporte, tf_posicion]),
                         ft.Divider(),
-                        ft.ElevatedButton("Generar Expediente y Gráfica", on_click=ejecutar_analisis_completo)
+                        ft.FilledButton("Generar Expediente y Gráfica", on_click=ejecutar_analisis_completo)
                     ])
                 )
             ),
@@ -115,9 +114,9 @@ def build_app(page: ft.Page):
                 content=ft.Container(
                     padding=20,
                     content=ft.Column([
-                        ft.Text("Controles del Visor Técnico de Movimiento", size=18, weight=ft.FontWeight.BOLD),
+                        ft.Text("Controles del Visor Técnico de Movimiento", size=18, weight="bold"),
                         ft.Row([chk_espejo, chk_grises]),
-                        ft.ElevatedButton("Lanzar Visor de Cámara", on_click=iniciar_visor_camara)
+                        ft.FilledButton("Lanzar Visor de Cámara", on_click=iniciar_visor_camara)
                     ])
                 )
             ),
@@ -126,7 +125,7 @@ def build_app(page: ft.Page):
                 content=ft.Container(
                     padding=20,
                     content=ft.Column([
-                        ft.Text("Análisis Cinemático Generado", size=18, weight=ft.FontWeight.BOLD),
+                        ft.Text("Análisis Cinemático Generado", size=18, weight="bold"),
                         img_grafica
                     ])
                 )

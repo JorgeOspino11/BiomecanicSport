@@ -11,14 +11,8 @@ class CameraConfigModel(BaseModel):
     mostrar_info: bool = True
     resolucion: Tuple[int, int] = (640, 480)
 
-class ItemModel(BaseModel):
-    """Modelo genérico para mantener compatibilidad."""
-    id: Optional[int] = None
-    nombre: str = "Registro Biomecánico"
-    estado: bool = True
-
 class PerfilAtletaModel(BaseModel):
-    """Modelo con todos los datos antropométricos y deportivos del atleta."""
+    """Modelo completo con los datos antropométricos y deportivos del atleta."""
     nombre: str
     apellido: str
     edad: int
@@ -31,7 +25,7 @@ class PerfilAtletaModel(BaseModel):
     lesiones_previas: Optional[str] = "Ninguna"
 
 class DiagnosticModel(BaseModel):
-    """Modelo para registrar el análisis técnico calculado por visión por computador."""
+    """Modelo para registrar las métricas analizadas por la cámara."""
     timestamp: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     angulo_promedio_rodilla: float
     asimetria_porcentaje: float
@@ -41,7 +35,7 @@ class DiagnosticModel(BaseModel):
     observaciones_tecnicas: List[str]
 
 def crear_directorio_atleta(atleta: PerfilAtletaModel, base_dir: str = "Data/Deportistas") -> str:
-    """Crea automáticamente la carpeta estructurada dentro del sistema para el deportista."""
+    """Crea automáticamente la estructura de carpetas para el deportista."""
     nombre_carpeta = f"{atleta.nombre}_{atleta.apellido}".replace(" ", "_").lower()
     ruta_atleta = os.path.join(base_dir, nombre_carpeta)
     os.makedirs(ruta_atleta, exist_ok=True)
