@@ -1,0 +1,15 @@
+=== INFORME BIOMECÁNICO DE RENDIMIENTO ===
+Atleta: Carlos Mendoza
+Deporte: Fútbol | Posición/Rol: Velocista
+Edad: 21 años | Peso: 72.0kg | Altura: 175.0cm
+-------------------------------------------
+Ángulo Articular Promedio: 135.5°
+Asimetría Biomecánica: 4.2%
+Frecuencia Cardíaca Estimada: 142 BPM
+Alerta de Valgo de Rodilla: NO
+Nivel de Fatiga: Moderado
+
+Observaciones Técnicas:
+ - Alineación adecuada de cadera en extensión.
+ - Asimetría de apoyos del 4.2% detectada en aceleración.
+ - Patrón respiratorio estable durante la prueba.
