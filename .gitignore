@@ -1,1 +1,27 @@
-/*__pycache__
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+!.env.example
+
+# Database & Storage
+*.sqlite3
+media/
+staticfiles/
+
+# Logs
+*.log
+
+# IDEs
+.idea/
+.vscode/

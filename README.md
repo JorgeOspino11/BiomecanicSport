@@ -1,81 +1,129 @@
-Desarrollar un ecosistema de software multiplataforma diseñado para centralizar, medir y optimizar el rendimiento físico de atletas de alto rendimiento. A diferencia de las soluciones tradicionales que requieren hardware costoso y fragmentado, este software unifica el análisis biomecánico, el entrenamiento basado en la velocidad (VBT) y el control de la fatiga fisiológica en una sola interfaz accesible desde dispositivos móviles y entornos web.  
+# BiomecanicSport
 
- 
+Plataforma de microservicios para el análisis biomecánico, entrenamiento basado en velocidad (VBT) y monitoreo del rendimiento físico en atletas de alto rendimiento mediante visión por computador y telemetría.
 
-Módulos 
+---
 
-Módulo Biomecánico y VBT (Visión por Computadora) 
+## Arquitectura del Sistema
 
-Mediante el uso de inteligencia artificial, el software procesa el video de la cámara en tiempo real para rastrear puntos articulares clave. Permite medir automáticamente ángulos de flexión, comparar ejecuciones técnicas en paralelo y estudiar el movimiento. Además, calcula de forma matemática el desplazamiento, la velocidad de ejecución, la aceleración y la potencia estimada, evaluando la capacidad de fuerza y el perfil neuromuscular en saltos y sprints. 
+El sistema opera bajo una arquitectura de microservicios contenerizada con Docker:
 
-Módulo de Carga Interna y Recuperación   
+```mermaid
+graph TD
+    Client[Cliente Móvil / Web] -->|HTTP / REST| Backend[backend: Django REST API :8000]
+    Backend -->|Persistencia ORM| DB[(db: PostgreSQL :5432)]
+    Backend -->|Caché y Tareas| Redis[(redis: Redis :6379)]
+    Backend -->|Inferencia / Visión| ML[ml_service: FastAPI & OpenCV :8001]
+    ML -->|Eventos / Mensajes| Redis
+```
 
-El sistema se sincroniza de forma inalámbrica con sensores de pulso cardíaco externos. Recopila con alta precisión los datos de la frecuencia cardíaca (FC) y la variabilidad de la frecuencia cardíaca (VFC) para correlacionar la fatiga del sistema nervioso con el esfuerzo físico realizado, permitiendo al entrenador ajustar de forma inteligente las cargas diarias de entrenamiento. 
+### Servicios
 
-Módulo de Gestión de Datos y Competencias 
+| Servicio | Tecnología | Puerto | Descripción |
+| :--- | :--- | :--- | :--- |
+| **backend** | Django 5, DRF, Python 3.12 | `8000` | API principal, autenticación, gestión de atletas, lógica de negocio y persistencia. |
+| **ml_service** | FastAPI, OpenCV, NumPy, Python 3.12 | `8001` | Procesamiento de video, estimación de puntos articulares y cálculos cinemáticos. |
+| **db** | PostgreSQL 16 Alpine | `5432` | Base de datos relacional (`BiomecanicSport`). |
+| **redis** | Redis 7 Alpine | `6379` | Gestor de memoria en caché y cola de tareas asíncronas. |
 
-Una base de datos centralizada que registra el histórico de esfuerzos de cada atleta. Permite almacenar, indexar y etiquetar videos de competencias completas para realizar análisis diferidos, asegurando un seguimiento evolutivo a largo plazo de la técnica y el rendimiento del deportista. 
+---
 
- 
+## Estructura del Proyecto
 
-Tecnologia 
+```text
+BiomecanicSport/
+├── .env.example            # Plantilla de variables de entorno
+├── .env                    # Configuración de entorno activa
+├── docker-compose.yml       # Orquestación de servicios
+├── backend/                # API REST (Django)
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── manage.py
+│   └── core/               # Configuración del proyecto
+│       ├── settings.py
+│       ├── urls.py
+│       ├── wsgi.py
+│       └── asgi.py
+├── ml_service/             # Microservicio de Visión y ML (FastAPI)
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── app/
+│       ├── __init__.py
+│       └── main.py
+├── frontend/               # Aplicación cliente
+└── V1/                     # Código previo de escritorio (Flet)
+```
 
-lgoritmo de aprendizaje de refuerzo (Q-Learning) 
+---
 
-Have you ever wondered how AI agents make decisions when faced with uncertainty? How do they know which path to take when multiple options exist? Enter Q-learning – a powerful technique in reinforcement learning that helps machines make smart choices, much like how we humans decide between different actions in our daily lives. 
+## Despliegue Local
 
-(Dubei, 2025) 
+### 1. Variables de Entorno
+Generar el archivo `.env` a partir de la plantilla:
+```bash
+cp .env.example .env
+```
 
- 
+Parámetros por defecto en `.env`:
+* **Base de datos:** `BiomecanicSport`
+* **Usuario:** `biomecanic_user`
+* **Contraseña:** `biomecanic_secret_password`
+* **Host DB:** `db`
+* **Host Redis:** `redis`
 
- 
+### 2. Iniciar Servicios
+Construir las imágenes y levantar los 4 contenedores:
+```bash
+docker compose up -d --build
+```
 
- 
+Verificar estado de los contenedores:
+```bash
+docker compose ps
+```
 
-Todas las funcionalidades del software se pueden hacer usando la cámara del móvil. 
+### 3. Migraciones y Administrador de Django
+Aplicar las migraciones a PostgreSQL:
+```bash
+docker compose exec backend python manage.py migrate
+```
 
- 
+Crear superusuario:
+```bash
+docker compose exec backend python manage.py createsuperuser
+```
 
-OpenCV(Python) 
+---
 
-SciPy / NumPy (Python) 
+## Endpoints de Verificación
 
-Lenguaje Base: Python (Django o FastAPI) 
+* **Django Backend Health Check:** `http://localhost:8000/api/health/`
+* **Django Admin:** `http://localhost:8000/admin/`
+* **ML Service Estado:** `http://localhost:8001/`
+* **ML Service Swagger UI:** `http://localhost:8001/docs`
+* **ML Service Redoc:** `http://localhost:8001/redoc`
 
- 
+---
 
-Objetivos 
+## Comandos Operativos
 
-medir, registrar y optimizar el rendimiento físico de un deportista 
+* **Ver registros de los servicios:**
+  ```bash
+  docker compose logs -f
+  docker compose logs -f backend
+  docker compose logs -f ml_service
+  ```
 
-el análisis de datos comparando ejecuciones técnicas en paralelo y estudiar el movimiento en tiempo real. 
+* **Acceso a terminal interactiva:**
+  ```bash
+  # Backend Django
+  docker compose exec backend bash
 
-la carga de trabajo y la biomecánica 
+  # Base de datos PostgreSQL
+  docker compose exec db psql -U biomecanic_user -d BiomecanicSport
+  ```
 
-rastrear puntos articulares 
-
-medir automáticamente ángulos de flexión 
-
- 
-
-Charmant, J. (s/f). Kinovea. Kinovea.org. Recuperado el 24 de septiembre de 2026, de https://www.kinovea.org/features.html 
-
-(s/f). Brandonrohrer.com. Recuperado el 24 de septiembre de 2026, de https://www.brandonrohrer.com/postgres_intro.html 
-
-Dubey, M. (2025, abril 26). Q-learning explained: Making decisions in uncertain environments. Linkedin.com. https://www.linkedin.com/pulse/q-learning-explained-making-decisions-uncertain-manasi-dubey-yo6ec 
-
- 
-
- 
-
-No le preste atencion a esto 
-
-Un aplicativo que permita medir, registrar y optimizar el rendimiento físico de un deportista mediante el análisis de datos en tiempo real, la carga de trabajo y la biomecánica 
-
-Lo importante es desarrollar un software para medir ángulos de flexión, comparar técnicas y estudiar el movimiento por video que mida la velocidad de ejecución, la potencia, la aceleración y el desplazamiento para evitar la fatiga. Este software calculará la capacidad de fuerza, velocidad en salto y sprint. Lo ideal es medir con precisión lo datos que varía la frecuencia cardíaca (FC) para ajustar las cargas diarias de entrenamiento. También que registre esfuerzos de entrenamiento y videos de competencias para crear una base de datos de rendimiento. 
-
- 
-
- 
-
- 
+* **Detener los servicios:**
+  ```bash
+  docker compose down
+  ```

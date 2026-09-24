@@ -1,0 +1,108 @@
+services:
+  # ==========================================
+  # SERVICIO: BASE DE DATOS POSTGRESQL
+  # ==========================================
+  db:
+    image: postgres:16-alpine
+    container_name: biomecanic_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-BiomecanicSport}
+      POSTGRES_USER: ${POSTGRES_USER:-biomecanic_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biomecanic_secret_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-biomecanic_user} -d ${POSTGRES_DB:-BiomecanicSport}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - biomecanic_network
+
+  # ==========================================
+  # SERVICIO: REDIS (Caché y Colas Asíncronas)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: biomecanic_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - biomecanic_network
+
+  # ==========================================
+  # SERVICIO: BACKEND PRINCIPAL (Django REST)
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: biomecanic_backend
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - biomecanic_network
+
+  # ==========================================
+  # SERVICIO: MACHINE LEARNING & OPENCV (FastAPI)
+  # ==========================================
+  ml_service:
+    build:
+      context: ./ml_service
+      dockerfile: Dockerfile
+    container_name: biomecanic_ml_service
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - ./ml_service:/app
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - biomecanic_network
+
+# ==========================================
+# VOLÚMENES PERSISTENTES
+# ==========================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ==========================================
+# REDES INTERNAS
+# ==========================================
+networks:
+  biomecanic_network:
+    driver: bridge
