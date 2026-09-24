@@ -1,6 +1,6 @@
 services:
   # ==========================================
-  # SERVICIO: BASE DE DATOS POSTGRESQL
+  # SERVICIO: BASE DE DATOS POSTGRESQL (Puerto Host: 4002)
   # ==========================================
   db:
     image: postgres:16-alpine
@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-biomecanic_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biomecanic_secret_password}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT_HOST:-4002}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -23,14 +23,14 @@ services:
       - biomecanic_network
 
   # ==========================================
-  # SERVICIO: REDIS (Caché y Colas Asíncronas)
+  # SERVICIO: REDIS (Puerto Host: 4003)
   # ==========================================
   redis:
     image: redis:7-alpine
     container_name: biomecanic_redis
     restart: always
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT_HOST:-4003}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -42,7 +42,7 @@ services:
       - biomecanic_network
 
   # ==========================================
-  # SERVICIO: BACKEND PRINCIPAL (Django REST)
+  # SERVICIO: BACKEND PRINCIPAL DJANGO (Puerto Host: 4000)
   # ==========================================
   backend:
     build:
@@ -54,7 +54,7 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-4000}:8000"
     env_file:
       - .env
     environment:
@@ -68,7 +68,7 @@ services:
       - biomecanic_network
 
   # ==========================================
-  # SERVICIO: MACHINE LEARNING & OPENCV (FastAPI)
+  # SERVICIO: MACHINE LEARNING FASTAPI (Puerto Host: 4001)
   # ==========================================
   ml_service:
     build:
@@ -76,11 +76,11 @@ services:
       dockerfile: Dockerfile
     container_name: biomecanic_ml_service
     restart: unless-stopped
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    command: uvicorn infrastructure.main:app --host 0.0.0.0 --port 8001 --reload
     volumes:
       - ./ml_service:/app
     ports:
-      - "8001:8001"
+      - "${ML_SERVICE_PORT:-4001}:8001"
     env_file:
       - .env
     environment:

@@ -1,0 +1,1 @@
+"""Adaptadores API HTTP FastAPI."""

@@ -2,7 +2,7 @@
 Configuración de URLs del proyecto core (Backend BiomecanicSport).
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.http import JsonResponse
 
 
@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Endpoint de verificación de estado
     path('api/health/', verificacion_salud, name='verificacion-salud'),
+    # API de gestión deportiva
+    path('api/', include('core_app.urls')),
 ]

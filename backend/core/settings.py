@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     # Librerías de terceros
     'rest_framework',
     'corsheaders',
+
+    # Aplicaciones del proyecto
+    'core_app',
 ]
 
 # ==========================================
