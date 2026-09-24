@@ -1,0 +1,31 @@
+{
+  "name": "telemetry-server",
+  "version": "1.0.0",
+  "description": "BiomecanicSport Telemetry Streaming Ingestion Server with WebSockets and MediaPipe Pose",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "biomechanics",
+    "websockets",
+    "telemetry",
+    "mediapipe",
+    "streaming"
+  ],
+  "author": "BioMecanicSport Team",
+  "license": "ISC",
+  "dependencies": {
+    "@mediapipe/pose": "^0.5.1675469404",
+    "axios": "^1.7.9",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

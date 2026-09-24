@@ -71,14 +71,9 @@ services:
   # SERVICIO: MACHINE LEARNING FASTAPI (Puerto Host: 4001)
   # ==========================================
   ml_service:
-    build:
-      context: ./ml_service
-      dockerfile: Dockerfile
+    image: snplglicth/biomecanicsport-ml:latest
     container_name: biomecanic_ml_service
     restart: unless-stopped
-    command: uvicorn infrastructure.main:app --host 0.0.0.0 --port 8001 --reload
-    volumes:
-      - ./ml_service:/app
     ports:
       - "${ML_SERVICE_PORT:-4001}:8001"
     env_file:
@@ -86,8 +81,30 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
+      db:
+        condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - biomecanic_network
+
+  # ==========================================
+  # SERVICIO: TELEMETRY SERVER NODE/TS (Puerto Host: 3000)
+  # Ingesta streaming WebSocket & extracción cinemática
+  # ==========================================
+  telemetry_server:
+    build:
+      context: ./telemetry_server
+      dockerfile: Dockerfile
+    container_name: biomecanic_telemetry_server
+    restart: unless-stopped
+    ports:
+      - "${TELEMETRY_PORT:-3000}:3000"
+    environment:
+      - TELEMETRY_PORT=3000
+      - ML_SERVICE_URL=http://ml_service:8001/analyze-telemetry
+    depends_on:
+      - ml_service
     networks:
       - biomecanic_network
 

@@ -25,3 +25,4 @@ staticfiles/
 # IDEs
 .idea/
 .vscode/
+node_modules/

@@ -1,0 +1,170 @@
+import { StyleSheet } from "react-native";
+import { Colors } from "../../theme/colors";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  centerContainer: {
+    flex: 1,
+    backgroundColor: Colors.background,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 28,
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: Colors.textPrimary,
+    marginBottom: 12,
+  },
+  descriptionText: {
+    fontSize: 15,
+    color: Colors.textSecondary,
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  primaryButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: Colors.background,
+    fontWeight: "800",
+    fontSize: 15,
+  },
+  hudOverlayTop: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+    right: 20,
+    alignItems: "center",
+  },
+  headerBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 12,
+  },
+  badgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.cardBackground,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.cardBorder,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  dotActive: {
+    backgroundColor: Colors.success,
+  },
+  dotIdle: {
+    backgroundColor: Colors.textSecondary,
+  },
+  badgeText: {
+    color: Colors.textPrimary,
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  logoutButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
+  },
+  logoutText: {
+    color: Colors.textPrimary,
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  angleCard: {
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 18,
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 1.5,
+  },
+  cardNormal: {
+    backgroundColor: Colors.overlayBg,
+    borderColor: Colors.primary,
+  },
+  cardAlert: {
+    backgroundColor: "rgba(255, 51, 102, 0.85)",
+    borderColor: Colors.danger,
+  },
+  angleLabel: {
+    color: "rgba(255, 255, 255, 0.75)",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  angleValue: {
+    color: Colors.textPrimary,
+    fontSize: 36,
+    fontWeight: "900",
+  },
+  alertText: {
+    color: Colors.textPrimary,
+    fontSize: 11,
+    fontWeight: "800",
+    marginTop: 4,
+  },
+  infoBanner: {
+    backgroundColor: Colors.cardBackground,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    maxWidth: "100%",
+    borderWidth: 1,
+    borderColor: Colors.cardBorder,
+  },
+  infoBannerText: {
+    color: "#E6EDF3",
+    fontSize: 13,
+    textAlign: "center",
+  },
+  hudOverlayBottom: {
+    position: "absolute",
+    bottom: 40,
+    left: 24,
+    right: 24,
+  },
+  actionButton: {
+    paddingVertical: 18,
+    borderRadius: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  actionButtonIdle: {
+    backgroundColor: Colors.primary,
+  },
+  actionButtonActive: {
+    backgroundColor: Colors.danger,
+  },
+  actionButtonText: {
+    color: Colors.background,
+    fontSize: 17,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+});

@@ -161,6 +161,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Modelo de Usuario personalizado
+AUTH_USER_MODEL = 'core_app.Usuario'
+
 
 # ==========================================
 # CONFIGURACIÓN DJANGO REST FRAMEWORK & CORS
